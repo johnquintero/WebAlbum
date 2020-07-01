@@ -1,0 +1,38 @@
+@using WebAlbum.Models;
+@{
+    Layout = "_Layout";
+}
+<div class="container">
+    <h1>Web Album</h1>
+    <br>
+    <span>Seleccionar un Album</span>
+    <select asp-items="@(new SelectList(Model,"Id","title"))" id="SelectAlbum"></select>
+    <br />
+    <table>
+        <thead>
+            
+        </thead>
+    </table>
+</div>
+@section scripts {
+    <script>
+        $(document).ready(()=>{
+            const Url = '@Url.Action("Lista2","Home")';
+            console.log(Url);
+             $("#SelectAlbum").click( () =>{
+                 $.ajax({
+                     url : Url + "/" + $("#SelectAlbum > option:selected").attr("value"),
+                     type : "GET",
+                     success : (result) => {
+                         console.log(result)
+                     },
+                     error : (error) => {
+                         console.log("Se presento un error");
+                         console.log(error);
+                     }
+                 })
+            });
+        })
+       
+    </script>
+}

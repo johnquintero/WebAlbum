@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAlbum</title>
+</head>
+<body>
+    <h1>Principal</h1>
+    <main role="main">
+        @RenderBody()
+    </main>
+    <footer class="border-top footer text-muted text-center">
+        <div class="container">
+            Copyright &copy; AlphaWeb WebAlbum @DateTime.Now.Year
+        </div>
+    </footer>
+    <script src="~/Lib/Jquery/jquery.js"></script>
+    @RenderSection("scripts",required:false)
+</body>
+</html>

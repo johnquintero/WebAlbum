@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "yZXE1BrBjKTdX2+LYhsnYBgjdozkoLrXd42Jd7GW7FmUyQo9VI3BbC290A4hft1A1jP9/3kvaw6AgQFRHz4BHw==",
+  "success": true,
+  "projectFilePath": "/Users/johnki/Proyectos/WebAlbum/WebAlbum.csproj",
+  "expectedPackageFiles": [
+    "/Users/johnki/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

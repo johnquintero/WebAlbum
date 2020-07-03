@@ -23,17 +23,27 @@ namespace WebAlbum.Controllers
             return View(albumList);
         }
         [HttpGet]
-        public async Task<IActionResult> Lista2 (int id)
+        public async Task<JsonResult> Lista2 (int id)
         {
             var httpClient = new HttpClient();
             var json = await httpClient.GetStringAsync("https://jsonplaceholder.typicode.com/photos");
             var photoList = new List<PhotoModel>();
             photoList = JsonConvert.DeserializeObject<List<PhotoModel>>(json);
+            var listaFiltrada = photoList.Where(p => p.albumid == id).ToList();
+            // listaFiltrada = JsonConvert.SerializeObject(<List<Photos>>,json)
 
-            ViewBag.Photos = photoList.Where(p => p.albumid == id).ToList();
-
-            return View();
+            return Json(listaFiltrada);
+        }
+        [HttpGet]
+        public async Task<JsonResult> CommentsPhoto (int id)
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync("https://jsonplaceholder.typicode.com/comments");
+            var commentList = new List<CommentModel>();
+            commentList = JsonConvert.DeserializeObject<List<CommentModel>>(json);
+            var listaFiltrada = commentList.Where(c => c.postId == id).ToList();
+            return Json(listaFiltrada);
         }
     }
-//https://jsonplaceholder.typicode.com/comments
+
 }

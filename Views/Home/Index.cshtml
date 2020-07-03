@@ -2,37 +2,128 @@
 @{
     Layout = "_Layout";
 }
+<style>
+    img{
+        width: 100px;
+        height: auto;
+    }
+</style>
 <div class="container">
     <h1>Web Album</h1>
     <br>
     <span>Seleccionar un Album</span>
+    <a href="#" onclick="Photoclick();">test</a>
     <select asp-items="@(new SelectList(Model,"Id","title"))" id="SelectAlbum"></select>
     <br />
-    <table>
-        <thead>
+    <hr />
+    <h3>Photos</h3>
+    <div style="height: 250px; width: auto; overflow-y: scroll;">
+        <table id="GridPhotos" class="table">
+            <thead>
             
-        </thead>
-    </table>
+            </thead>
+        </table>
+    </div>
+    <hr />
+    <h3>Comments</h3>
+    <div>
+        <table id="comentarios" class="table table-sm table-striped">
+            <thead class="thead-dark">
+                <td>Id</td>
+                <td>Name</td>
+                <td>Email</td>
+            </thead>
+            <tbody id="tbodycomment">
+
+            </tbody>
+        </table>
+    </div>
 </div>
 @section scripts {
     <script>
         $(document).ready(()=>{
             const Url = '@Url.Action("Lista2","Home")';
-            console.log(Url);
-             $("#SelectAlbum").click( () =>{
-                 $.ajax({
-                     url : Url + "/" + $("#SelectAlbum > option:selected").attr("value"),
-                     type : "GET",
-                     success : (result) => {
-                         console.log(result)
-                     },
-                     error : (error) => {
-                         console.log("Se presento un error");
-                         console.log(error);
-                     }
-                 })
+            $("#SelectAlbum").change( () => {
+                fetch(Url + "/" + $("#SelectAlbum > option:selected").attr("value"))
+                .then((response) => {
+                    if(response.status!== 200){
+                        console.log('Se presento un problema: ' + response.status);
+                        return;
+                    }
+                    response.json().then((data)=> {
+                        var tblbody = document.createElement("tbody");
+                        var tabla = document.getElementById("GridPhotos");
+                        tabla.innerHTML = '';
+                        for(let i in data){
+                            var hilera = document.createElement("tr");
+                            var celda = document.createElement("td");
+                            var celda2 = document.createElement ("td");
+                            var celda3 = document.createElement("td");
+                            var anchor = document.createElement("A");
+                            var att = document.createAttribute("onclick");
+                            att.value = "Photoclick(this);";
+                            anchor.href = "#"; 
+                            anchor.text = data[i].id;
+                            anchor.id = "linkcomment";
+                            anchor.setAttributeNode(att);
+                            celda.appendChild(anchor);
+                            hilera.appendChild(celda);
+                            var txtoCelda2 = document.createTextNode(data[i].title);
+                            celda2.appendChild(txtoCelda2);
+                            hilera.appendChild(celda2);
+                            var objimg = document.createElement("img");
+                            objimg.src = data[i].url;
+                            celda3.appendChild(objimg);
+                            hilera.appendChild(celda3);
+                            tblbody.appendChild(hilera);
+                            $("#GridPhotos").append(tblbody);
+                        }
+                    });
+                })
+                .catch((err)=>{
+                    console.log('fetch erro: -S', err);
+                });
             });
-        })
-       
+        });
+
+        function Photoclick(elem){
+            console.log(elem.text);
+            const Url = '@Url.Action("CommentsPhoto","Home")';
+            console.log(Url+  "/" + elem.text);
+            fetch(Url +  "/" + elem.text)
+            .then((response)=>{
+                if(response.status!== 200){
+                    console.log('Se presento un problema: ' + response.status);
+                    return;
+                }
+                response.json().then((data)=> {
+                    console.log(data);
+                    var tblbody = document.getElementById("tbodycomment");
+                    var tabla = document.getElementById("comentarios");
+                    tblbody.innerHTML ='';
+                    data.forEach((element)=>{
+                        var hilera = document.createElement("tr");
+                        var cName = document.createElement("td");
+                        var cEmail = document.createElement ("td");
+                        var cBody = document.createElement("td");
+                        var txtName = document.createTextNode(element.name);
+                        var txtEmail = document.createTextNode(element.email);
+                        var txtBody = document.createTextNode(element.body);
+                        cName.appendChild(txtName);
+                        hilera.appendChild(cName);
+                        cEmail.appendChild(txtEmail);
+                        hilera.appendChild(cEmail);
+                        cBody.appendChild(txtBody);
+                        hilera.appendChild(cBody);
+                        tblbody.appendChild(hilera);
+                        $("#comentarios").append(tblbody);
+                    })
+
+                });
+            })
+            .catch((err)=>{
+                console.log('fetch erro: -S', err);
+            }); 
+        }
     </script>
 }
